@@ -6,7 +6,7 @@ import tkintermapview
 users:list=[]
 
 class User:
-    def _init_(self,name,surname,location,post):
+    def __init__(self,name,surname,location,post):
         self.name =name
         self.surname=surname
         self.location=location
