@@ -199,3 +199,54 @@ root.title("Mapa Zakładów Fryzjerskich")
 frame_left = Frame(root)
 frame_left.grid(row=0, column=0, sticky=N)
 
+Button(frame_left, text="Formularz: Zakład", command=lambda: pokaz_formularz("zaklad")).grid(row=0, column=0, columnspan=2)
+Button(frame_left, text="Formularz: Pracownik", command=lambda: pokaz_formularz("pracownik")).grid(row=1, column=0, columnspan=2)
+Button(frame_left, text="Formularz: Klient", command=lambda: pokaz_formularz("klient")).grid(row=2, column=0, columnspan=2)
+
+frame_formularz = Frame(frame_left)
+frame_formularz.grid(row=3, column=0, columnspan=2, pady=10)
+
+Button(frame_left, text="Pokaż wszystkie zakłady", command=pokaz_wszystkie_zaklady).grid(row=4, column=0, columnspan=2)
+Button(frame_left, text="Pokaż wszystkich pracowników", command=pokaz_wszystkich_pracownikow).grid(row=5, column=0, columnspan=2)
+
+Label(frame_left, text="Nazwa zakładu klientów:").grid(row=6, column=0, columnspan=2)
+entry_zaklad_klient = Entry(frame_left)
+entry_zaklad_klient.grid(row=7, column=0, columnspan=2)
+Button(frame_left, text="Pokaż klientów zakładu", command=pokaz_klientow_zakladu).grid(row=8, column=0, columnspan=2)
+
+Label(frame_left, text="Nazwa zakładu pracowników:").grid(row=9, column=0, columnspan=2)
+entry_zaklad_pracownik = Entry(frame_left)
+entry_zaklad_pracownik.grid(row=10, column=0, columnspan=2)
+Button(frame_left, text="Pokaż pracowników zakładu", command=pokaz_pracownikow_zakladu).grid(row=11, column=0, columnspan=2)
+
+Label(frame_left, text="Usuń/Aktualizuj - wpisz nazwę").grid(row=12, column=0, columnspan=2)
+entry_usun = Entry(frame_left)
+entry_usun.grid(row=13, column=0, columnspan=2)
+
+Button(frame_left, text="Usuń zakład", command=lambda: usun_obiekt(zaklady_fryzjerskie, listbox_zaklady, entry_usun.get())).grid(row=14, column=0)
+Button(frame_left, text="Aktualizuj zakład", command=lambda: aktualizuj_obiekt(zaklady_fryzjerskie, entry_usun.get(), "zaklad")).grid(row=14, column=1)
+
+Button(frame_left, text="Usuń pracownika", command=lambda: usun_obiekt(pracownicy, listbox_pracownicy, entry_usun.get())).grid(row=15, column=0)
+Button(frame_left, text="Aktualizuj pracownika", command=lambda: aktualizuj_obiekt(pracownicy, entry_usun.get(), "pracownik")).grid(row=15, column=1)
+
+Button(frame_left, text="Usuń klienta", command=lambda: usun_obiekt(klienci, listbox_klienci, entry_usun.get())).grid(row=16, column=0)
+Button(frame_left, text="Aktualizuj klienta", command=lambda: aktualizuj_obiekt(klienci, entry_usun.get(), "klient")).grid(row=16, column=1)
+
+Label(frame_left, text="Zakłady").grid(row=17, column=0)
+listbox_zaklady = Listbox(frame_left, height=5)
+listbox_zaklady.grid(row=18, column=0, columnspan=2)
+
+Label(frame_left, text="Pracownicy").grid(row=19, column=0)
+listbox_pracownicy = Listbox(frame_left, height=5)
+listbox_pracownicy.grid(row=20, column=0, columnspan=2)
+
+Label(frame_left, text="Klienci").grid(row=21, column=0)
+listbox_klienci = Listbox(frame_left, height=5)
+listbox_klienci.grid(row=22, column=0, columnspan=2)
+
+map_widget = tkintermapview.TkinterMapView(root, width=900, height=700, corner_radius=0)
+map_widget.grid(row=0, column=1)
+map_widget.set_position(52.23, 21.0)
+map_widget.set_zoom(6)
+
+root.mainloop()
