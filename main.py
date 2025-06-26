@@ -97,3 +97,105 @@ def aktualizuj_obiekt(lista, nazwa, typ):
             pokaz_formularz(typ, obj)
             break
 
+def pokaz_formularz(typ, obiekt=None):
+    for widget in frame_formularz.winfo_children():
+        widget.destroy()
+
+    Label(frame_formularz, text="Nazwa").grid(row=0, column=0)
+    global entry_name
+    entry_name = Entry(frame_formularz)
+    entry_name.grid(row=0, column=1)
+
+    Label(frame_formularz, text="Miejscowość").grid(row=1, column=0)
+    global entry_location
+    entry_location = Entry(frame_formularz)
+    entry_location.grid(row=1, column=1)
+
+    global entry_extra
+    entry_extra = None
+
+    if typ != "zaklad":
+        Label(frame_formularz, text="Zakład").grid(row=2, column=0)
+        entry_extra = Entry(frame_formularz)
+        entry_extra.grid(row=2, column=1)
+
+    if obiekt:
+        entry_name.insert(0, obiekt.nazwa)
+        entry_location.insert(0, obiekt.miejscowosc)
+        if entry_extra:
+            entry_extra.insert(0, obiekt.zaklad)
+
+        def update():
+            obiekt.nazwa = entry_name.get()
+            obiekt.miejscowosc = entry_location.get()
+            if hasattr(obiekt, 'zaklad'):
+                obiekt.zaklad = entry_extra.get()
+            obiekt.coordinates = obiekt.get_coordinates()
+
+            # Odswież listbox
+            if typ == "zaklad":
+                odswiez_listbox(listbox_zaklady, zaklady_fryzjerskie)
+            elif typ == "pracownik":
+                odswiez_listbox(listbox_pracownicy, pracownicy)
+            elif typ == "klient":
+                odswiez_listbox(listbox_klienci, klienci)
+
+            clear_entries()
+            pokaz_formularz(typ)
+
+        Button(frame_formularz, text="Zapisz zmiany", command=update).grid(row=3, column=0, columnspan=2)
+    else:
+        if typ == "zaklad":
+            Button(frame_formularz, text="Dodaj zakład", command=dodaj_zaklad).grid(row=3, column=0, columnspan=2)
+        elif typ == "pracownik":
+            Button(frame_formularz, text="Dodaj pracownika", command=dodaj_pracownika).grid(row=3, column=0, columnspan=2)
+        elif typ == "klient":
+            Button(frame_formularz, text="Dodaj klienta", command=dodaj_klienta).grid(row=3, column=0, columnspan=2)
+
+def usun_wszystkie_markery():
+    global wszystkie_markery
+    for marker in wszystkie_markery:
+        marker.delete()
+    wszystkie_markery = []
+
+def pokaz_wszystkie_zaklady():
+    usun_wszystkie_markery()
+    map_widget.set_zoom(6)
+    for z in zaklady_fryzjerskie:
+        z.marker = map_widget.set_marker(z.coordinates[0], z.coordinates[1], text=z.nazwa)
+        wszystkie_markery.append(z.marker)
+
+def pokaz_wszystkich_pracownikow():
+    usun_wszystkie_markery()
+    map_widget.set_zoom(6)
+    for p in pracownicy:
+        p.marker = map_widget.set_marker(p.coordinates[0], p.coordinates[1], text=f"{p.nazwa} - {p.zaklad}")
+        wszystkie_markery.append(p.marker)
+
+def pokaz_klientow_zakladu():
+    usun_wszystkie_markery()
+    nazwa_zakladu = entry_zaklad_klient.get()
+    if nazwa_zakladu:
+        for k in klienci:
+            if k.zaklad == nazwa_zakladu:
+                k.marker = map_widget.set_marker(k.coordinates[0], k.coordinates[1], text=f"{k.nazwa} - {k.zaklad}")
+                wszystkie_markery.append(k.marker)
+
+def pokaz_pracownikow_zakladu():
+    usun_wszystkie_markery()
+    nazwa_zakladu = entry_zaklad_pracownik.get()
+    if nazwa_zakladu:
+        for p in pracownicy:
+            if p.zaklad == nazwa_zakladu:
+                p.marker = map_widget.set_marker(p.coordinates[0], p.coordinates[1], text=f"{p.nazwa} - {p.zaklad}")
+                wszystkie_markery.append(p.marker)
+
+# === GUI ===
+
+root = Tk()
+root.geometry("1200x800")
+root.title("Mapa Zakładów Fryzjerskich")
+
+frame_left = Frame(root)
+frame_left.grid(row=0, column=0, sticky=N)
+
